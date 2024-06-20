@@ -1,0 +1,17 @@
+
+
+// leftJoinAndSelect 
+
+async getUsersWithBlogsAndComments(): Promise<User[]> {
+    return await this.userRepository
+        .createQueryBuilder('user')
+        .leftJoinAndSelect(subQuery => {
+            return subQuery
+                .select('comment.id', 'commentId')
+                .addSelect('comment.content', 'commentContent')
+                .from('comment', 'comment')
+                .where('comment.blogId = blog.id');
+        }, 'comments')
+        .leftJoinAndSelect('user.blogs', 'blog')
+        .getMany();
+}
