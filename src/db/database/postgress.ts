@@ -1,24 +1,24 @@
-import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
+import * as dotenv from 'dotenv';
 
-type CustomTypeOrmModuleOptions = TypeOrmModuleOptions & {
-    cli?: {
-      migrationsDir: string;
-    };
-};
+dotenv.config();
 
-export const configDataConnect: DataSourceOptions = {
+export const AppDataSource = new DataSource({
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
-  username: 'postgres',
-  password: '',
-  database: 'testmigrate',
+  host: process.env.DATABASE_HOST,
+  port: parseInt(process.env.DATABASE_PORT, 10),
+  username: process.env.DATABASE_USERNAME,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
   entities: ['dist/**/*.entity.js'],
   migrations: ['dist/db/migrations/*.js'],
   synchronize: false,
-};
+});
 
-
-const dataSource = new DataSource(configDataConnect)
-export default dataSource;
+AppDataSource.initialize()
+  .then(() => {
+    console.log('Data Source has been initialized!');
+  })
+  .catch((err) => {
+    console.error('Error during Data Source initialization', err);
+  });

@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserModule } from './user/user.module';
-import { configDataConnect } from './db/database/postgress';
+import { AppDataSource } from './db/database/postgress';
 import { BlogModule } from './blog/blog.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(configDataConnect),
-    UserModule,
+    TypeOrmModule.forRoot(AppDataSource.options),
+    ContactModule,
     BlogModule,
   ],
   controllers: [AppController],
